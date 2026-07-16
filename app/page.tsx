@@ -1,9 +1,21 @@
-import Header from "./components/Header";
+import HomeProducts from "@/components/ProductCard";
+import Header from "../components/Header";
+import {fetchProducts} from "@/utils/action/product.action";
+export default async function Home() {
+  // const { data, error } = await supabase
+  //   .from("products")
+  //   .select("*");
 
-export default function Home() {
+  // if (error) {
+  //   return <pre>{JSON.stringify(error, null, 2)}</pre>;
+  // }
+  const allProudects   = fetchProducts()
+  
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-          <Header/>
-    </div>
+    <main>
+      <Header />
+      
+      <HomeProducts products={allProudects}/>
+    </main>
   );
 }
