@@ -19,7 +19,7 @@
     "react-ions": "^5.4.1",
     "zod": "^4.4.3",
     "zustand": "^5.0.14"
-  }, 
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
@@ -29,13 +29,5 @@
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
   }
 }
