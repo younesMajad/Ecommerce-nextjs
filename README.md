@@ -206,14 +206,3 @@ Open [http://localhost:3000](http://localhost:3000).
 3. Add environment variables
 4. Deploy
 
-### Supabase
-
-1. Create a new Supabase project
-2. Add the `products` table and seed data
-3. Run the migration `supabase/migrations/002_user_features.sql`
-4. Enable Auth providers (Google OAuth)
-5. Ensure RLS policies exist (public read on `products`, user-scoped on user tables)
-
-## License
-
-MIT
