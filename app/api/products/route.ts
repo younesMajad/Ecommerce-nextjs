@@ -18,36 +18,36 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from("products")
-    .select("*, category:categories(id, name, slug)", { count: "exact" });
+    .select("*", { count: "exact" });
 
   if (category) {
-    query = query.eq("categories.slug", category);
+    query = query.ilike("category", `%${category.replace(/-/g, " ")}%`);
   }
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%,brand.ilike.%${search}%`);
+    query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
   }
 
   if (minPrice) {
-    query = query.gte("offer_price", Number(minPrice));
+    query = query.gte("price", Number(minPrice));
   }
 
   if (maxPrice) {
-    query = query.lte("offer_price", Number(maxPrice));
+    query = query.lte("price", Number(maxPrice));
   }
 
   switch (sort) {
     case "price_asc":
-      query = query.order("offer_price", { ascending: true });
+      query = query.order("price", { ascending: true });
       break;
     case "price_desc":
-      query = query.order("offer_price", { ascending: false });
+      query = query.order("price", { ascending: false });
       break;
     case "newest":
       query = query.order("created_at", { ascending: false });
       break;
     case "popular":
-      query = query.order("review_count", { ascending: false });
+      query = query.order("created_at", { ascending: false });
       break;
     default:
       query = query.order("created_at", { ascending: false });

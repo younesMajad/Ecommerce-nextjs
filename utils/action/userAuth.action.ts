@@ -37,15 +37,6 @@ export async function signUp(email: string, password: string, fullName: string) 
     return { error: error.message };
   }
 
-  if (data.user) {
-    await supabase.from("profiles").upsert({
-      id: data.user.id,
-      email: data.user.email!,
-      full_name: fullName,
-      role: "customer",
-    });
-  }
-
   revalidatePath("/");
   return { session: data.session, user: data.user };
 }
@@ -107,26 +98,24 @@ export async function getProfile() {
 
   if (!user) return null;
 
-  const { data } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  return data;
+  return {
+    id: user.id,
+    email: user.email || "",
+    full_name: user.user_metadata?.full_name || "",
+    avatar_url: user.user_metadata?.avatar_url || null,
+    phone: user.user_metadata?.phone || "",
+    role: "customer",
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+  };
 }
 
 export async function updateProfile(updates: { full_name?: string; phone?: string; avatar_url?: string }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  if (!user) return { error: "Not authenticated" };
-
-  const { error } = await supabase
-    .from("profiles")
-    .upsert({ id: user.id, ...updates });
+  const { error } = await supabase.auth.updateUser({
+    data: updates,
+  });
 
   if (error) return { error: error.message };
 

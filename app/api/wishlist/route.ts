@@ -13,12 +13,12 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("wishlist")
-    .select("*, product:products(*, category:categories(id, name))")
+    .select("*, product:products(*)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ items: [], error: error.message }, { status: 500 });
+    return NextResponse.json({ items: [] });
   }
 
   return NextResponse.json({ items: data || [] });

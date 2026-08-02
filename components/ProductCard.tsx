@@ -20,11 +20,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
     toast.success("Added to cart");
   };
 
-  const discountPercent =
-    product.discount > 0
-      ? Math.round(((product.price - product.offer_price) / product.price) * 100)
-      : 0;
-
   return (
     <Link href={`/product/${product.id}`}>
       <motion.div
@@ -34,17 +29,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
       >
         <div className="relative overflow-hidden bg-gray-50 aspect-square">
           <Image
-            src={product.image_url_array?.[0] || "/placeholder.png"}
-            alt={product.name}
+            src={product.image || "/placeholder.png"}
+            alt={product.title}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
-          {discountPercent > 0 && (
-            <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-              -{discountPercent}%
-            </span>
-          )}
           <button
             onClick={handleAddToCart}
             className="absolute bottom-3 right-3 bg-black/80 hover:bg-black text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -54,27 +44,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
         <div className="p-4">
           <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-            {product.category?.name || "Category"}
+            {product.category || "Category"}
           </p>
-          <h3 className="font-medium text-gray-900 truncate mb-1">{product.name}</h3>
-          <div className="flex items-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Image
-                key={i}
-                src={i < Math.round(product.average_rating || 4) ? assets.star_icon : assets.star_dull_icon}
-                alt="star"
-                className="w-3 h-3"
-              />
-            ))}
-            <span className="text-xs text-gray-500 ml-1">
-              ({product.review_count || 0})
-            </span>
-          </div>
+          <h3 className="font-medium text-gray-900 truncate mb-1">{product.title}</h3>
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg">${product.offer_price || product.price}</span>
-            {product.discount > 0 && (
-              <span className="text-sm text-gray-400 line-through">${product.price}</span>
-            )}
+            <span className="font-semibold text-lg">${product.price}</span>
           </div>
         </div>
       </motion.div>

@@ -6,12 +6,10 @@ import Image from "next/image";
 
 interface Product {
   id: string;
-  name: string;
+  title: string;
   price: number;
-  offer_price: number;
-  quantity: number;
-  status: string;
-  image_url_array: string[];
+  category: string;
+  image: string;
   created_at: string;
 }
 
@@ -52,8 +50,7 @@ export default function AdminProductsPage() {
               <tr>
                 <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Product</th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Price</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Stock</th>
-                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
                 <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
@@ -64,25 +61,18 @@ export default function AdminProductsPage() {
                     <div className="flex items-center gap-3">
                       <div className="relative w-10 h-10 bg-gray-100 rounded-lg overflow-hidden">
                         <Image
-                          src={product.image_url_array?.[0] || "/placeholder.png"}
-                          alt={product.name}
+                          src={product.image || "/placeholder.png"}
+                          alt={product.title}
                           fill
                           className="object-contain"
                           sizes="40px"
                         />
                       </div>
-                      <span className="font-medium text-sm text-gray-900">{product.name}</span>
+                      <span className="font-medium text-sm text-gray-900">{product.title}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">${product.offer_price || product.price}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{product.quantity}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      product.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                    }`}>
-                      {product.status}
-                    </span>
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">${product.price}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{product.category}</td>
                   <td className="px-6 py-4">
                     <Link href={`/product/${product.id}`} className="text-sm text-blue-600 hover:underline">
                       View

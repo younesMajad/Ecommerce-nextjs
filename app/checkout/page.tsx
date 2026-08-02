@@ -28,7 +28,7 @@ export default function CheckoutPage() {
   const [shippingMethod, setShippingMethod] = useState("standard");
 
   const subtotal = items.reduce(
-    (acc, item) => acc + (item.offer_price || item.price) * item.quantity,
+    (acc, item) => acc + item.price * item.quantity,
     0
   );
   const shippingCost = shippingMethod === "express" ? 19.99 : subtotal > 50 ? 0 : 9.99;
@@ -225,18 +225,18 @@ export default function CheckoutPage() {
                     <div key={item.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl">
                       <div className="relative w-16 h-16 bg-gray-50 rounded-lg overflow-hidden">
                         <Image
-                          src={item.image_url_array?.[0] || "/placeholder.png"}
-                          alt={item.name}
+                          src={item.image || "/placeholder.png"}
+                          alt={item.title}
                           fill
                           className="object-contain p-1"
                           sizes="64px"
                         />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-sm">{item.name}</p>
+                        <p className="font-medium text-sm">{item.title}</p>
                         <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                       </div>
-                      <p className="font-medium">${(item.offer_price || item.price) * item.quantity}</p>
+                      <p className="font-medium">${item.price * item.quantity}</p>
                     </div>
                   ))}
                 </div>

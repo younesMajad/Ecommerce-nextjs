@@ -40,13 +40,35 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
+- `NEXT_PUBLIC_SUPABASE_URL` — your project URL, e.g. `https://<ref>.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — the publishable API key from **Project Settings → API** (safe to expose in the browser)
+
 ### 4. Database Setup
 
-Run the SQL migration in your Supabase SQL Editor:
+The app expects the following tables in your Supabase project:
 
-```bash
-# File: supabase/migrations/001_initial_schema.sql
+| Table | Purpose |
+| --- | --- |
+| `products` | Product catalog (`id`, `title`, `description`, `price`, `image`, `category`, `created_at`) |
+| `profiles` | User profiles, extends `auth.users` |
+| `orders` | Order records |
+| `wishlist` | User wishlists |
+| `reviews` | Product reviews with ratings |
+
+Run the user-features migration in your Supabase SQL Editor:
+
 ```
+# File: supabase/migrations/002_user_features.sql
+```
+
+Then ensure a public read policy exists on `products`:
+
+```sql
+create policy "public read products" on products
+  for select using (true);
+```
+
+Categories are not a separate table — they are derived from the distinct `category` values in `products`.
 
 ### 5. Run the development server
 
@@ -67,13 +89,12 @@ Open [http://localhost:3000](http://localhost:3000).
 - Session management
 
 ### Products
-- Product listing with pagination
-- Category filtering
+- Product listing from the live Supabase database
+- Category filtering (derived from `products.category`)
 - Search with debounce
-- Sort by price, popularity, newest
+- Sort by price and newest
 - Price range filtering
-- Product detail page with image gallery
-- Related products
+- Product detail page with image gallery (`ImageOverview` component)
 - Reviews and ratings
 
 ### Shopping Cart
@@ -103,17 +124,12 @@ Open [http://localhost:3000](http://localhost:3000).
 ### Admin Dashboard
 - Dashboard overview with stats
 - Products CRUD
-- Categories management
 - Orders management
-- Users list
-- Coupons management
-- Reviews moderation
-- Store settings
 
 ### Pages
 - Home (Hero slider, categories, CTA)
 - Shop (Products grid, filters, search)
-- Product Detail (Gallery, info, add to cart)
+- Product Detail (Image gallery, info, add to cart)
 - Cart
 - Checkout (Multi-step)
 - Login / Signup
@@ -129,9 +145,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - Server Components by default
 - Image optimization with Next.js Image
 - Lazy loading
-- Skeleton loading states
-- SEO with metadata, OpenGraph, sitemap, robots.txt
-- Streaming with Suspense
+- SEO with metadata and OpenGraph
 
 ### Security
 - Supabase Row Level Security (RLS)
@@ -144,9 +158,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```
 ├── app/
-│   ├── api/                    # API routes
+│   ├── api/                    # API routes (products, categories, wishlist)
 │   ├── admin/                  # Admin dashboard
-│   ├── auth/                   # Auth callback
 │   ├── cart/                   # Shopping cart
 │   ├── checkout/               # Checkout flow
 │   ├── favorites/              # Wishlist page
@@ -157,25 +170,19 @@ Open [http://localhost:3000](http://localhost:3000).
 │   ├── orders/                 # Order history
 │   ├── profile/                # User profile
 │   ├── shop/                   # Product listing
-│   ├── about/                  # About page
-│   ├── contact/                # Contact page
 │   ├── product/                # Product detail
 │   ├── layout.tsx              # Root layout
 │   ├── page.tsx                # Home page
 │   ├── not-found.tsx           # 404 page
-│   ├── sitemap.ts              # Sitemap
-│   ├── robots.ts               # Robots.txt
 │   └── globals.css             # Global styles
 ├── components/
 │   ├── store/                  # Zustand stores
+│   ├── ImageOverview.tsx       # Reusable image gallery
 │   ├── Navbar.tsx
 │   ├── Footer.tsx
 │   ├── Header.tsx              # Hero slider
 │   ├── ProductCard.tsx
-│   ├── HomeProducts.tsx
 │   └── ProductDetails.tsx
-├── context/
-│   └── App.Context.tsx         # React context
 ├── hooks/
 │   └── index.ts                # Custom hooks
 ├── utils/
@@ -190,23 +197,6 @@ Open [http://localhost:3000](http://localhost:3000).
 └── next.config.ts              # Next.js config
 ```
 
-## Database Schema
-
-The database includes the following tables:
-
-- **profiles** - User profiles (extends auth.users)
-- **products** - Product catalog
-- **categories** - Product categories
-- **reviews** - Product reviews with ratings
-- **orders** - Order records
-- **wishlist** - User wishlists
-- **addresses** - Saved addresses
-- **coupons** - Discount coupons
-- **inventory** - Stock tracking
-- **notifications** - User notifications
-
-See `supabase/migrations/001_initial_schema.sql` for the full schema.
-
 ## Deployment
 
 ### Vercel
@@ -219,9 +209,10 @@ See `supabase/migrations/001_initial_schema.sql` for the full schema.
 ### Supabase
 
 1. Create a new Supabase project
-2. Run the migration SQL
-3. Enable Auth providers (Google OAuth)
-4. Configure RLS policies
+2. Add the `products` table and seed data
+3. Run the migration `supabase/migrations/002_user_features.sql`
+4. Enable Auth providers (Google OAuth)
+5. Ensure RLS policies exist (public read on `products`, user-scoped on user tables)
 
 ## License
 

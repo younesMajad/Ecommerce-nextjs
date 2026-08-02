@@ -2,8 +2,10 @@ import { ProductParams } from "@/shared.types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+type CartLineItem = ProductParams & { quantity: number };
+
 interface CartStoreParams {
-  items: ProductParams[];
+  items: CartLineItem[];
   addItem: (item: ProductParams) => void;
   decreaseQty: (id: string) => void;
   increaseQty: (id: string) => void;

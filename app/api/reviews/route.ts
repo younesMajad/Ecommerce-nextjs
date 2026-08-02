@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
   let query = supabase
     .from("reviews")
-    .select("*, profiles:user_id(full_name, avatar_url)")
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (productId) {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ reviews: [], error: error.message }, { status: 500 });
+    return NextResponse.json({ reviews: [] });
   }
 
   return NextResponse.json({ reviews: data || [] });

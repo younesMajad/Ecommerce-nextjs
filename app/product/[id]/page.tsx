@@ -1,42 +1,55 @@
-// import ProductDetails from "@/components/ProductDetails";
-// import { fetchProductById } from "@/utils/action/product.action";
-// import { notFound } from "next/navigation";
-// import type { Metadata } from "next";
+import ProductDetails from "@/components/ProductDetails";
+import { createClient } from "@/utils/supabase/server";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
-// export async function generateMetadata({
-//   params,
-// }: {
-//   params: Promise<{ id: string }>;
-// }): Promise<Metadata> {
-//   const { id } = await params;
-//   const product = await fetchProductById(id);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const product = await fetchProductById(id);
 
-//   if (!product) {
-//     return { title: "Product Not Found" };
-//   }
+  if (!product) {
+    return { title: "Product Not Found" };
+  }
 
-//   return {
-//     title: product.name,
-//     description: product.description,
-//     openGraph: {
-//       title: product.name,
-//       description: product.description,
-//       images: product.image_url_array?.[0] ? [{ url: product.image_url_array[0] }] : [],
-//     },
-//   };
-// }
+  return {
+    title: product.title,
+    description: product.description,
+    openGraph: {
+      title: product.title,
+      description: product.description,
+      images: product.image ? [{ url: product.image }] : [],
+    },
+  };
+}
 
-// export default async function Product({
-//   params,
-// }: {
-//   params: Promise<{ id: string }>;
-// }) {
-//   const { id } = await params;
-//   const product = await fetchProductById(id);
+async function fetchProductById(id: string) {
+  const supabase = await createClient();
 
-//   if (!product) {
-//     notFound();
-//   }
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-//   return <ProductDetails product={product} />;
-// }
+  if (error || !data) return null;
+  return data;
+}
+
+export default async function Product({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const product = await fetchProductById(id);
+
+  if (!product) {
+    notFound();
+  }
+
+  return <ProductDetails product={product} />;
+}

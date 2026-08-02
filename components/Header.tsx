@@ -14,7 +14,7 @@ const HeaderSlider = () => {
       offer: "Limited Time Offer 30% Off",
       buttonText1: "Coming Soon",
       buttonText2: "Find more",
-      imgSrc: assets.header_headphone_image,
+      imgSrc: assets.venu_watch_image,
     },
     {
       id: 2,
@@ -22,7 +22,7 @@ const HeaderSlider = () => {
       offer: "Hurry up only few lefts!",
       buttonText1: "Coming Soon",
       buttonText2: "Explore Deals",
-      imgSrc: assets.header_playstation_image,
+      imgSrc: assets.sony_airbuds_image,
     },
     {
       id: 3,
@@ -48,7 +48,7 @@ const HeaderSlider = () => {
   };
 
   return (
-    <div className="overflow-hidden relative w-full bg-black md:min-h-[450px] min-h-[400px] flex flex-col justify-center pb-12">
+    <div className="overflow-hidden relative w-full bg-black md:min-h-[450px] min-h-[400px] flex flex-col justify-center pt-18">
       <div className="relative w-full h-full flex-1 flex items-center">
         <AnimatePresence mode="wait">
           <motion.div

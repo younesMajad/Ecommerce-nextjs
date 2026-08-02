@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useCallback } from "react";
+import React, { createContext, useState } from "react";
 
 interface User {
   id?: string;

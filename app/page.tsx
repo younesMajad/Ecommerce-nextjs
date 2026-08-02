@@ -1,7 +1,44 @@
 import HeaderSlider from "@/components/Header";
+import HomeProducts from "@/components/HomeProducts";
+import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
-export default function Home() {
+const fallbackCategories = [
+  { name: "Headphones", slug: "headphones", color: "from-amber-50 to-orange-50" },
+  { name: "Phones", slug: "phones", color: "from-blue-50 to-indigo-50" },
+  { name: "Laptops", slug: "laptops", color: "from-green-50 to-emerald-50" },
+  { name: "Cameras", slug: "cameras", color: "from-purple-50 to-pink-50" },
+];
+
+export default async function Home() {
+  const supabase = await createClient();
+
+  const { data: products } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(8);
+
+  const { data: categoryRows } = await supabase
+    .from("products")
+    .select("category")
+    .not("category", "is", null)
+    .not("category", "eq", "");
+
+  const seen = new Set<string>();
+  const categories = (categoryRows || [])
+    .map((row) => row.category?.trim())
+    .filter((category): category is string => !!category && !seen.has(category) && !!seen.add(category))
+    .map((name) => ({ name, slug: name.toLowerCase().replace(/\s+/g, "-") }));
+
+  const displayCategories =
+    categories.length > 0
+      ? categories.map((cat, index) => ({
+          ...cat,
+          color: fallbackCategories[index % fallbackCategories.length]?.color || "from-gray-50 to-gray-100",
+        }))
+      : fallbackCategories;
+
   return (
     <main>
       <HeaderSlider />
@@ -10,12 +47,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="text-2xl font-medium mb-8">Shop by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { name: "Headphones", slug: "headphones", color: "from-amber-50 to-orange-50" },
-            { name: "Phones", slug: "phones", color: "from-blue-50 to-indigo-50" },
-            { name: "Laptops", slug: "laptops", color: "from-green-50 to-emerald-50" },
-            { name: "Cameras", slug: "cameras", color: "from-purple-50 to-pink-50" },
-          ].map((cat) => (
+          {displayCategories.map((cat) => (
             <Link
               key={cat.slug}
               href={`/shop?category=${cat.slug}`}
@@ -29,6 +61,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Products Section */}
+      <HomeProducts products={products || []} title="New Arrivals" />
 
       {/* Features Section */}
       <section className="bg-gray-50 py-16">

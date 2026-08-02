@@ -23,7 +23,9 @@ export const metadata: Metadata = {
   },
   description:
     "Discover premium electronics and accessories. Shop the latest in headphones, laptops, phones, and more.",
-  keywords: ["electronics", "shop", "headphones", "laptops", "phones", "accessories"],
+  icons: null,
+
+  keywords: ["electronics","shop","headphones","laptops","phones","accessories"],
   authors: [{ name: "Store" }],
   openGraph: {
     type: "website",

@@ -1,30 +1,11 @@
 export interface ProductParams {
   id: string;
-  author_id: string;
-  sizes: string[];
-  colors: string[];
-  styles: string[];
-  brand: string;
-  status: string;
-  image_url_array: string[];
-  videos_url_array: string[];
-  name: string;
-  category: {
-    id: string;
-    name: string;
-  };
-  price: number;
+  title: string;
   description: string;
-  discount: number;
-  quantity: number;
-  product_shipping_fee: number;
-  offer_price: number;
+  price: number;
+  image: string;
+  category: string;
   created_at: string;
-  updated_at: string;
-  location: string;
-  product_comment: string;
-  average_rating?: number;
-  review_count?: number;
 }
 
 export interface AddressParams {

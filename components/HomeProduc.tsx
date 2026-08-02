@@ -9,14 +9,19 @@ interface HomeProductsParams {
   title?: string;
 }
 
-const HomeProducts = ({ products, title = "Popular Products" }: HomeProductsParams) => {
+const HomeProducts = ({
+  products,
+  title = "Popular Products",
+}: HomeProductsParams) => {
   if (!products || products.length === 0) {
     return null;
   }
 
   return (
     <div className="flex flex-col items-center pt-14">
-      <p className="text-2xl font-medium text-left w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{title}</p>
+      <p className="text-2xl font-medium text-left w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {title}
+      </p>
 
       <motion.div
         initial="hidden"

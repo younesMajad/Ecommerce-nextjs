@@ -76,7 +76,7 @@ function ShopContent() {
       </div>
 
       {/* Search & Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-3 mb-8">
         <div className="flex-1">
           <input
             type="text"

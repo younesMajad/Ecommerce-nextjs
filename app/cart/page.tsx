@@ -12,7 +12,7 @@ export default function CartPage() {
   const clearCart = cartStore((s) => s.clearCartItems);
 
   const subtotal = items.reduce(
-    (acc, item) => acc + (item.offer_price || item.price) * item.quantity,
+    (acc, item) => acc + item.price * item.quantity,
     0
   );
   const shipping = subtotal > 50 ? 0 : 9.99;
@@ -63,8 +63,8 @@ export default function CartPage() {
             >
               <div className="relative w-24 h-24 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden">
                 <Image
-                  src={item.image_url_array?.[0] || "/placeholder.png"}
-                  alt={item.name}
+                  src={item.image || "/placeholder.png"}
+                  alt={item.title}
                   fill
                   className="object-contain p-2"
                   sizes="96px"
@@ -75,11 +75,10 @@ export default function CartPage() {
                   href={`/product/${item.id}`}
                   className="font-medium text-gray-900 hover:underline truncate block"
                 >
-                  {item.name}
+                  {item.title}
                 </Link>
-                <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
                 <p className="font-semibold text-gray-900 mt-2">
-                  ${(item.offer_price || item.price) * item.quantity}
+                  ${item.price * item.quantity}
                 </p>
               </div>
               <div className="flex flex-col items-end justify-between">
