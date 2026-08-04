@@ -1,113 +1,187 @@
-# E-Commerce Store
+# ⚡️ Premium Next.js 16 E-Commerce Platform
 
-A modern, production-ready eCommerce platform built with Next.js 16, React 19, TypeScript, Tailwind CSS, and Supabase.
+A modern, production-ready, full-stack E-Commerce storefront featuring a high-performance shopping experience. Powered by the latest web technologies, this platform delivers instant page transitions, seamless user authentication, and real-time database synchronization.
 
-## Tech Stack
+<p align="center">
+  <img src="./public/assets/project-architecture.svg" alt="Project System Architecture" width="100%" />
+</p>
 
-- **Framework:** Next.js 16 (App Router)
-- **React:** 19
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS v4
-- **Database:** Supabase (PostgreSQL)
-- **Auth:** Supabase Auth (Email/Password, Magic Link, Google OAuth)
-- **State:** Zustand (cart persistence)
-- **Animations:** Framer Motion
-- **Validation:** Zod
-- **Notifications:** react-hot-toast
+---
 
-## Getting Started
+## 🚀 Tech Stack & Core Technologies
 
-### 1. Clone the repository
+| Layer | Technology | Description |
+| :--- | :--- | :--- |
+| **Framework** | **Next.js 16 (App Router)** | Server Components, Streaming, API routes, and optimized assets |
+| **Frontend Library** | **React 19** | Modern UI primitives and improved server-action support |
+| **Language** | **TypeScript** | Absolute type-safety across client, actions, and API layers |
+| **Styling** | **Tailwind CSS v4** | Rapid, utility-first layouts with zero-runtime compilation overhead |
+| **Database** | **Supabase (PostgreSQL)** | Persistent storage, real-time sync, and relational performance |
+| **Authentication** | **Supabase Auth & SSR** | Secure cookie-based sessions, Magic Links, and Social OAuth |
+| **State Management** | **Zustand** | Light, lightning-fast client-side cart state with local persistence |
+| **Form Validation** | **Zod** | Schema-driven client and server input sanitization |
+| **Animations** | **Framer Motion** | Silky smooth animations, transitions, and micro-interactions |
+| **Notifications** | **React Hot Toast** | Non-blocking, beautiful feedback for user behaviors |
 
+---
+
+## 🛠️ Getting Started & Installation
+
+Follow these steps to spin up the application in a local development environment.
+
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) (v18.x or later) and [pnpm](https://pnpm.io/) installed.
+
+### 1. Clone the Repository
 ```bash
 git clone <repository-url>
 cd e-commerce-app
 ```
 
-### 2. Install dependencies
-
+### 2. Install Dependencies
+This project uses **pnpm workspaces** for dependency orchestration. Run the following command at the root folder:
 ```bash
 pnpm install
 ```
 
-### 3. Environment Variables
-
-Copy `.env.example` to `.env.local` and fill in your values:
-
+### 3. Configure Environment Variables
+Copy the template file to create your local environment file:
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+cp .env.example .env.local
+```
+Open `.env.local` and fill in your Supabase configuration:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-publishable-anon-key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+- **`NEXT_PUBLIC_SUPABASE_URL`**: Your project API Endpoint (found in Supabase Dashboard → Project Settings → API).
+- **`NEXT_PUBLIC_SUPABASE_ANON_KEY`**: The safe, client-side publishable key (found under the same API page).
+- **`NEXT_PUBLIC_SITE_URL`**: Used by auth redirects and metadata links (defaults to `http://localhost:3000` for local testing).
 
-- `NEXT_PUBLIC_SUPABASE_URL` — your project URL, e.g. `https://<ref>.supabase.co`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — the publishable API key from **Project Settings → API** (safe to expose in the browser)
+---
 
-### 4. Database Setup
+## 🗄️ Database Setup & Migrations
 
-The app expects the following tables in your Supabase project:
+To get the backend ready, you must initialize your Supabase instance with the provided SQL migrations.
 
-| Table | Purpose |
-| --- | --- |
-| `products` | Product catalog (`id`, `title`, `description`, `price`, `image`, `category`, `created_at`) |
-| `profiles` | User profiles, extends `auth.users` |
-| `orders` | Order records |
-| `wishlist` | User wishlists |
-| `reviews` | Product reviews with ratings |
+### 1. Apply Schema Migrations
+In the Supabase SQL Editor, run the contents of the following files in order:
+1. **`supabase/migrations/001_initial_schema.sql`** — Initializes the base tables (`profiles`, `categories`, `products`, `reviews`, `addresses`, `orders`, `wishlist`, `coupons`, `inventory`, `notifications`).
+2. **`supabase/migrations/002_user_features.sql`** — Sets up triggers to automatically create database profile rows on auth signup, and configures primary user tables.
 
-Run the user-features migration in your Supabase SQL Editor:
-
-```
-# File: supabase/migrations/002_user_features.sql
-```
-
-Then ensure a public read policy exists on `products`:
-
+### 2. Set Row-Level Security (RLS)
+The database enforces RLS for maximum client security. Ensure a public read policy is active on the `products` table so visitors can view items:
 ```sql
 create policy "public read products" on products
   for select using (true);
 ```
 
-Categories are not a separate table — they are derived from the distinct `category` values in `products`.
+> 💡 **Note on Categories**: In this application, product categories are dynamically derived and synchronized from the unique values in the `products.category` table column via server API caching.
 
-### 5. Run the development server
+---
 
-```bash
-pnpm dev
+## 📂 Project Structure
+
+A clean, predictable directory structure that isolates API logic, reusable components, and client page routes:
+
+```
+├── app/                        # Next.js 16 App Router Directory
+│   ├── about/                  # About Us Static/Dynamic Page
+│   ├── admin/                  # Admin Operations Dashboard (CRUD, Orders)
+│   ├── api/                    # Server-side API Endpoints (Products, Categories)
+│   ├── auth/                   # Redirect handles & OAuth session callback
+│   ├── cart/                   # Local-persisted cart overview
+│   ├── checkout/               # Multi-step checkout pipeline (address, summary)
+│   ├── contact/                # Contact Support submission page
+│   ├── favorites/              # Wishlisted products layout (Database-synced)
+│   ├── forgot-password/        # Trigger password reset magic links
+│   ├── login/                  # User Sign In (Email, Password, OAuth)
+│   ├── orders/                 # Customer personal order history page
+│   ├── product/                # Product details routes ([id]/page.tsx)
+│   ├── profile/                # User avatar, address, & preference settings
+│   ├── reset-password/         # Set a new credentials callback route
+│   ├── shop/                   # Catalog listing (Sorts, filters, searches)
+│   ├── signup/                 # Register a new customer
+│   ├── layout.tsx              # Application layout & state providers
+│   ├── page.tsx                # Homepage featuring banners, promos, & bestsellers
+│   └── globals.css             # Tailwind v4 globals & custom rules
+├── components/                 # Reusable UI Primitives
+│   ├── store/                  # Zustand client stores (Cart, navigation states)
+│   ├── Footer.tsx              # Universal footer element
+│   ├── Header.tsx              # Landing page hero slides & promotions
+│   ├── ImageOverview.tsx       # Smooth image thumbnail switcher with zoom
+│   ├── Navbar.tsx              # Main navigation header with interactive badges
+│   ├── ProductCard.tsx         # Hover-animated product showcase cards
+│   └── ProductDetails.tsx      # Main detail page wrapper component
+├── hooks/                      # Custom React hooks (Index mappings)
+├── utils/                      # Helper libraries & configurations
+│   ├── action/                 # Server Actions (Auth actions, Order placements)
+│   ├── lib/                    # Supabase connectors & mathematical formatting helpers
+│   └── zodvalidations/         # Shared schemas for forms & inputs validation
+└── supabase/                   # Postgres configuration
+    └── migrations/             # SQL database snapshots (001, 002)
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+---
 
-## Features
+## 📡 Core API Reference
 
-### Authentication
-- Email/Password sign in & sign up
-- Magic link (OTP) authentication
-- Google OAuth
-- Password reset flow
-- Protected routes with middleware
-- Session management
+The storefront relies on internal API routes located in `app/api/*` for fast data-fetching:
 
-### Products
-- Product listing from the live Supabase database
-- Category filtering (derived from `products.category`)
-- Search with debounce
-- Sort by price and newest
-- Price range filtering
-- Product detail page with image gallery (`ImageOverview` component)
-- Reviews and ratings
+### `GET /api/products`
+Retrieves products based on filters. Supports pagination, search, and categorization out of the box.
+* **Query Parameters:**
+  * `page` (number): Target page index (defaults to `1`)
+  * `limit` (number): Items per page (defaults to `12`)
+  * `category` (string): Target category name
+  * `search` (string): Partial text search matching name or description (debounced on client)
+  * `sort` (string): `price_asc` (cheapest first), `price_desc` (expensive first), or `newest` (creation date)
+  * `minPrice` / `maxPrice` (number): Restrict prices to a specific range
 
-### Shopping Cart
-- Add/remove items
-- Update quantities
-- Persisted to localStorage
-- Cart count badge in navbar
-- Mini cart preview
+### `GET /api/categories`
+Dynamically collects all distinct categories currently stored in the product catalog and calculates inventory availability counts. Returns formatted category cards.
 
-### Wishlist
-- Add/remove from product cards
-- Dedicated favorites page
-- Synced with database
+### `GET /api/reviews`
+Retrieves user feedback, rankings, and commentary for products.
+* **Query Parameters:**
+  * `productId` (UUID): Get reviews restricted to a specific item.
+
+### `GET /api/wishlist`
+Fetches the current user's authenticated list of favorited items. Requester must be signed in (otherwise returns `401 Unauthorized`).
+
+---
+
+
+## 💻 Development Workflow & Scripts
+
+Use the following standard scripts to manage the lifecycle of your code:
+
+```bash
+pnpm dev      # Starts the local development server at http://localhost:3000
+pnpm build    # Compiles and optimizes the codebase for a production release
+pnpm start    # Launches the compiled Next.js server locally
+pnpm lint     # Runs ESLint checks to enforce codebase quality and consistency
+```
+
+---
+
+## 🌐 Deployment Guidelines
+
+### Deploy to Vercel
+1. Import your cloned GitHub repository into **Vercel**.
+2. Under **Project Settings → Environment Variables**, input the matching `.env.local` parameters:
+   * `NEXT_PUBLIC_SUPABASE_URL`
+   * `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   * `NEXT_PUBLIC_SITE_URL` (Use your production domain URL, e.g., `https://my-store.vercel.app`)
+3. Click **Deploy**. Vercel will build and serve your app globally.
+
+### Set up Supabase in Production
+1. Provision a new project on the **Supabase Cloud Dashboard**.
+2. Run your SQL setup scripts in the database SQL Editor (from the `supabase/migrations` folder).
+3. Update Auth settings (OAuth redirect paths) under **Authentication → URL Configuration** to match your production domain.
+
+---
 
 ### Checkout
 - Multi-step checkout flow
@@ -206,3 +280,8 @@ Open [http://localhost:3000](http://localhost:3000).
 3. Add environment variables
 4. Deploy
 
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE) — feel free to customize and launch your own premium storefronts!

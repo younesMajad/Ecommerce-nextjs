@@ -35,7 +35,7 @@ export default function ContactPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white border border-gray-200 rounded-3xl p-8 md:p-10"
+          className="bg-white/40 border border-gray-200 rounded-3xl p-8 md:p-10"
         >
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -60,15 +60,7 @@ export default function ContactPage() {
                 />
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-              <input
-                type="text"
-                value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition"
-              />
-            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
               <textarea
