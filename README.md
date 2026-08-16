@@ -2,9 +2,6 @@
 
 A modern, production-ready, full-stack E-Commerce storefront featuring a high-performance shopping experience. Powered by the latest web technologies, this platform delivers instant page transitions, seamless user authentication, and real-time database synchronization.
 
-<p align="center">
-  <img src="./public/assets/project-architecture.svg" alt="Project System Architecture" width="100%" />
-</p>
 
 ---
 
